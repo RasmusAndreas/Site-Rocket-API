@@ -16,3 +16,11 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/websites', 'WebsitesController@index');
+
+Route::post('/websites', 'WebsitesController@store');
+
+Route::patch('/websites/{website}', 'WebsitesController@update');
+
+Route::delete('/websites/{website}', 'WebsitesController@destroy');
