@@ -17,10 +17,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/websites', 'WebsitesController@index');
+Route::get('/websites', 'WebsitesController@index'); // implement /users/{user}
 
 Route::post('/websites', 'WebsitesController@store');
 
 Route::patch('/websites/{website}', 'WebsitesController@update');
 
 Route::delete('/websites/{website}', 'WebsitesController@destroy');
+
+Route::get('/websites/{website}/uptimes/', 'UptimesController@index');
