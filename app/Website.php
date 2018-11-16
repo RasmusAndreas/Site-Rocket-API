@@ -10,5 +10,6 @@ class Website extends Model
 
     public function uptimes() {
         return $this->hasMany('App\Uptime');
+        return $this->hasMany('App\Url');
     }
 }

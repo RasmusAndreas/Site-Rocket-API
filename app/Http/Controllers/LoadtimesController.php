@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Uptime;
+use App\Loadtime;
+use App\Url;
 use App\Website;
 use Illuminate\Http\Request;
 
-class UptimesController extends Controller
+class LoadtimesController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Website $website)
+    public function index(Request $request, Website $website, Url $url)
     {
-        return Uptime::where('websiteID', $website->id)->get();
+        return Loadtime::where('urlID', $url->id)->get();
     }
 
     /**
@@ -37,22 +38,23 @@ class UptimesController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'statusCode' => 'required|integer',
-            'websiteID' => 'required|integer',
+            'loadtime' => 'required|between:0,100.00',
+            'urlID' => 'required|integer',
+
         ]);
 
-        $uptime = Uptime::create($data);
+        $loadtime = Loadtime::create($data);
 
-        return response($uptime, 201);
+        return response($loadtime, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Uptime  $uptime
+     * @param  \App\Loadtime  $loadtime
      * @return \Illuminate\Http\Response
      */
-    public function show(Uptime $uptime)
+    public function show(Loadtime $loadtime)
     {
         //
     }
@@ -60,10 +62,10 @@ class UptimesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Uptime  $uptime
+     * @param  \App\Loadtime  $loadtime
      * @return \Illuminate\Http\Response
      */
-    public function edit(Uptime $uptime)
+    public function edit(Loadtime $loadtime)
     {
         //
     }
@@ -72,27 +74,21 @@ class UptimesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Uptime  $uptime
+     * @param  \App\Loadtime  $loadtime
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Website $website, Uptime $uptime)
+    public function update(Request $request, Loadtime $loadtime)
     {
-        $data = $request->validate([
-            'excludeDowntime' => 'required|boolean',
-        ]);
-
-        $uptime->update($data);
-
-        return response($uptime, 200);
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Uptime  $uptime
+     * @param  \App\Loadtime  $loadtime
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Uptime $uptime)
+    public function destroy(Loadtime $loadtime)
     {
         //
     }
