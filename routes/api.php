@@ -13,14 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    }); 
+
+    Route::get('/websites', 'WebsitesController@index');
+
+    Route::post('/logout', 'AuthController@logout');
 });
 
 // implement /users/{user} on all routes
 
 // Website Routes
-Route::get('/websites', 'WebsitesController@index');
 
 Route::post('/websites', 'WebsitesController@store');
 
@@ -46,3 +51,7 @@ Route::patch('/websites/{website}/urls/{url}', 'UrlsController@update');
 Route::get('/websites/{website}/urls/{url}/loadtimes', 'LoadtimesController@index');
 
 Route::post('/websites/{website}/urls/{url}/loadtimes', 'LoadtimesController@store');
+
+// Authentification
+
+Route::post('/register', 'AuthController@register');

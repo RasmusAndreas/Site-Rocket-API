@@ -14,7 +14,7 @@ class WebsitesController extends Controller
      */
     public function index()
     {
-        return Website::all();
+        return Website::where('userID', auth()->user()->id)->get();
     }
 
     /**
@@ -40,6 +40,7 @@ class WebsitesController extends Controller
             'domain' => 'required|string',
             'featureSettings' => 'required|string',
             'reportLink' => 'required|string',
+            'userID' => 'required|integer',
         ]);
 
         $website = Website::create($data);
