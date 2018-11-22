@@ -14,7 +14,11 @@ class UrlsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Website $website)
-    {
+    {   
+        if ($website->user_id !== auth()->user()->id) {
+            return response()->json('Unauthorized', 401);
+        }
+
         return Url::where('websiteID', $website->id)->get();
     }
 
@@ -34,11 +38,14 @@ class UrlsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request, Website $website)
+    {   
+        if ($website->user_id !== auth()->user()->id) {
+            return response()->json('Unauthorized', 401);
+        }
+
         $data = $request->validate([
             'url' => 'required|string',
-            'htmlToText' => 'required|between:0,100.00',
             'wordCount' => 'required|integer',
             'metaDescription' => 'required|integer',
             'altText' => 'required|integer',
@@ -49,11 +56,22 @@ class UrlsController extends Controller
             'h4' => 'required|integer',
             'h5' => 'required|integer',
             'h6' => 'required|integer',
-            'websiteID' => 'required|integer',
-
         ]);
 
-        $url = Url::create($data);
+        $url = Url::create([
+            'url' => $request->url,
+            'wordCount' => $request->wordCount,
+            'metaDescription' => $request->metaDescription,
+            'altText' => $request->altText,
+            'title' => $request->title,
+            'h1' => $request->h1,
+            'h2' => $request->h2,
+            'h3' => $request->h3,
+            'h4' => $request->h4,
+            'h5' => $request->h5,
+            'h6' => $request->h6,
+            'websiteID' => $website->id,
+        ]);
 
         return response($url, 201);
     }
@@ -88,9 +106,12 @@ class UrlsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Website $website, Url $url)
-    {
+    {   
+        if ($website->user_id !== auth()->user()->id || $website->id !== $url->websiteID) {
+            return response()->json('Unauthorized', 401);
+        }
+
         $data = $request->validate([
-            'htmlToText' => 'required|between:0,100.00',
             'wordCount' => 'required|integer',
             'metaDescription' => 'required|integer',
             'altText' => 'required|integer',

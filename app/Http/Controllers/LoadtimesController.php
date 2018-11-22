@@ -16,6 +16,10 @@ class LoadtimesController extends Controller
      */
     public function index(Request $request, Website $website, Url $url)
     {
+        if ($website->user_id !== auth()->user()->id || $website->id !== $url->websiteID) {
+            return response()->json('Unauthorized', 401);
+        }
+
         return Loadtime::where('urlID', $url->id)->get();
     }
 
@@ -35,15 +39,20 @@ class LoadtimesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Website $website, Url $url)
     {
-        $data = $request->validate([
-            'loadtime' => 'required|between:0,100.00',
-            'urlID' => 'required|integer',
+        if ($website->user_id !== auth()->user()->id || $website->id !== $url->websiteID) {
+            return response()->json('Unauthorized', 401);
+        }
 
+        $data = $request->validate([
+            'loadtime' => 'required|integer',
         ]);
 
-        $loadtime = Loadtime::create($data);
+        $loadtime = Loadtime::create([
+            'loadtime' => $request->loadtime,
+            'urlID' => $url->id,
+        ]);
 
         return response($loadtime, 201);
     }

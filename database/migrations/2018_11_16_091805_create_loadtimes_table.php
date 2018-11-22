@@ -16,7 +16,7 @@ class CreateLoadtimesTable extends Migration
         Schema::create('loadtimes', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->decimal('loadtime', 5, 2);
+            $table->integer('loadtime');
             $table->integer('urlID')->unsigned();
             $table->foreign('urlID')->references('id')->on('urls')->onDelete('cascade');
         });

@@ -14,7 +14,7 @@ class WebsitesController extends Controller
      */
     public function index()
     {
-        return Website::where('userID', auth()->user()->id)->get();
+        return Website::where('user_id', auth()->user()->id)->get();
     }
 
     /**
@@ -40,10 +40,15 @@ class WebsitesController extends Controller
             'domain' => 'required|string',
             'featureSettings' => 'required|string',
             'reportLink' => 'required|string',
-            'userID' => 'required|integer',
         ]);
 
-        $website = Website::create($data);
+        $website = Website::create([
+            'websiteName' => $request->websiteName,
+            'domain' => $request->domain,
+            'featureSettings' => $request->featureSettings,
+            'reportLink' => $request->reportLink,
+            'user_id' => auth()->user()->id,
+        ]);
 
         return response($website, 201);
     }
@@ -79,6 +84,10 @@ class WebsitesController extends Controller
      */
     public function update(Request $request, Website $website)
     {
+        if ($website->user_id !== auth()->user()->id) {
+            return response()->json('Unauthorized', 401);
+        }
+
         $data = $request->validate([
             'websiteName' => 'required|string',
             'domain' => 'required|string',
@@ -99,6 +108,10 @@ class WebsitesController extends Controller
      */
     public function destroy(Website $website)
     {
+        if ($website->user_id !== auth()->user()->id) {
+            return response()->json('Unauthorized', 401);
+        }
+
         $website->delete();
 
         return response('Website deleted successfully', 200);

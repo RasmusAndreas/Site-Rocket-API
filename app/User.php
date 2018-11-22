@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'apikey',
     ];
 
     /**
@@ -30,6 +30,6 @@ class User extends Authenticatable
     ];
 
     public function websites() {
-        return $this->hasMany('App\Websites');
+        return $this->hasMany('App\Website');
     }
 }

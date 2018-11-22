@@ -20,8 +20,8 @@ class CreateWebsitesTable extends Migration
             $table->text('featureSettings');
             $table->text('reportLink');
             $table->timestamps();
-            $table->integer('userID')->unsigned();
-            $table->foreign('userID')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

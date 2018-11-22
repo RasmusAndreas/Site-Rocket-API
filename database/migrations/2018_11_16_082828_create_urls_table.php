@@ -18,7 +18,6 @@ class CreateUrlsTable extends Migration
             $table->timestamps();
             $table->text('url');
             $table->boolean('excludeLoadtimes')->default(false);
-            $table->decimal('htmlToText', 5, 2);
             $table->integer('wordCount');
             $table->integer('metaDescription');
             $table->integer('altText');

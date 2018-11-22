@@ -19,6 +19,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'apikey' => str_random(35) . time(),
         ]);
     }
 

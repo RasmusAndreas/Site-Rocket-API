@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Website extends Model
 {
-    protected $fillable = ['websiteName', 'domain', 'featureSettings', 'reportLink', 'userID'];
+    protected $fillable = ['websiteName', 'domain', 'featureSettings', 'reportLink', 'user_id'];
 
     public function uptimes() {
         return $this->hasMany('App\Uptime');

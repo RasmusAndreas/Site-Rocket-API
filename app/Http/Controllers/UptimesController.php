@@ -14,7 +14,11 @@ class UptimesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Website $website)
-    {
+    {   
+        if ($website->user_id !== auth()->user()->id) {
+            return response()->json('Unauthorized', 401);
+        }
+
         return Uptime::where('websiteID', $website->id)->get();
     }
 
@@ -34,14 +38,20 @@ class UptimesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request, Website $website)
+    {   
+        if ($website->user_id !== auth()->user()->id) {
+            return response()->json('Unauthorized', 401);
+        }
+
         $data = $request->validate([
             'statusCode' => 'required|integer',
-            'websiteID' => 'required|integer',
         ]);
 
-        $uptime = Uptime::create($data);
+        $uptime = Uptime::create([
+            'statusCode' => $request->statusCode,
+            'websiteID' => $website->id,
+        ]);
 
         return response($uptime, 201);
     }
@@ -76,7 +86,11 @@ class UptimesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Website $website, Uptime $uptime)
-    {
+    {   
+        if ($website->user_id !== auth()->user()->id || $website->id !== $uptime->websiteID) {
+            return response()->json('Unauthorized', 401);
+        }
+
         $data = $request->validate([
             'excludeDowntime' => 'required|boolean',
         ]);
