@@ -38,22 +38,9 @@ class UptimesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Website $website)
+    public function store(Request $request)
     {   
-        if ($website->user_id !== auth()->user()->id) {
-            return response()->json('Unauthorized', 401);
-        }
-
-        $data = $request->validate([
-            'statusCode' => 'required|integer',
-        ]);
-
-        $uptime = Uptime::create([
-            'statusCode' => $request->statusCode,
-            'websiteID' => $website->id,
-        ]);
-
-        return response($uptime, 201);
+ 
     }
 
     /**

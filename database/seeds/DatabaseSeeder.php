@@ -40,63 +40,63 @@ class DatabaseSeeder extends Seeder
         DB::table('websites')->insert([
             'websiteName' => str_random(10),
             'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'featureSettings' => 'uptime:0;seo:0;loadtime:0',
             'reportLink' => 'none',
             'user_id' => 1,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'Randiplatz',
+            'domain' => 'http://randiplatz.dk',
+            'featureSettings' => 'uptime:1;seo:0;loadtime:0',
             'reportLink' => 'none',
             'user_id' => 1,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'Rasmusandreas.dk',
+            'domain' => 'http://www.rasmusandreas.dk',
+            'featureSettings' => 'uptime:1;seo:1;loadtime:1',
             'reportLink' => 'none',
             'user_id' => 2,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'JDAnet',
+            'domain' => 'http://jdanet.dk',
+            'featureSettings' => 'uptime:0;seo:1;loadtime:0',
             'reportLink' => 'none',
             'user_id' => 2,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'Rytmisk Musik Vejen',
+            'domain' => 'http://www.Rytmiskmusikvejen.dk',
+            'featureSettings' => 'uptime:0;seo:1;loadtime:1',
             'reportLink' => 'none',
             'user_id' => 2,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'Brørup Medie Net',
+            'domain' => 'http://bafnet.dk',
+            'featureSettings' => 'uptime:1;seo:0;loadtime:0',
             'reportLink' => 'none',
             'user_id' => 3,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'Snippets JDAnet',
+            'domain' => 'http://snippets.jdanet.dk',
+            'featureSettings' => 'uptime:1;seo:0;loadtime:0',
             'reportLink' => 'none',
             'user_id' => 3,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'DWP',
+            'domain' => 'http://http://cms.rasmusandreas.dk',
+            'featureSettings' => 'uptime:0;seo:0;loadtime:1',
             'reportLink' => 'none',
             'user_id' => 3,
         ]);
         DB::table('websites')->insert([
-            'websiteName' => str_random(10),
-            'domain' => 'https://' . str_random(10) . '.com',
-            'featureSettings' => 'none',
+            'websiteName' => 'Alvabio',
+            'domain' => 'http://alvabio.rasmusandreas.dk/',
+            'featureSettings' => 'uptime:0;seo:1;loadtime:0',
             'reportLink' => 'none',
             'user_id' => 3,
         ]);
@@ -152,7 +152,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -168,7 +167,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -184,7 +182,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -200,7 +197,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -216,7 +212,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -232,7 +227,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -248,7 +242,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -264,7 +257,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,
@@ -280,7 +272,6 @@ class DatabaseSeeder extends Seeder
         DB::table('urls')->insert([
             'url' => '/testurl',
             'excludeLoadtimes' => false,
-            'htmlToText' => 10.51,
             'wordCount' => 120,
             'metaDescription' => 128,
             'altText' => 2,

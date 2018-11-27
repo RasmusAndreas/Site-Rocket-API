@@ -6,6 +6,8 @@ use App\Loadtime;
 use App\Url;
 use App\Website;
 use App\User;
+use App\Uptime;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class TrackingController extends Controller
@@ -34,13 +36,17 @@ class TrackingController extends Controller
                     return response()->json('nope user', 200);
 
                 } else {
-
-                    // save loadtime
-                    $loadtime = Loadtime::create([
-                        'loadtime' => $time,
-                        'urlID' => $urlfrom[0]['id'],
-                    ]);
-                    return response($loadtime, 201);
+                    $settings = $this->getSettings($website);
+                    if ($settings['loadtime'] == 1) {
+                        // save loadtime
+                        $loadtime = Loadtime::create([
+                            'loadtime' => $time,
+                            'urlID' => $urlfrom[0]['id'],
+                        ]);
+                        return response($loadtime, 201);
+                    } else {
+                        return response()->json('Setting not activated', 200);
+                    }
                 }
             }
         }
@@ -112,7 +118,45 @@ class TrackingController extends Controller
         }     
     }
 
-    public function uptime (Request $request, Website $website, User $user, Url $url) {
-        return response()->json($request->client_secret, 200);
+    public function uptime (Request $request, Website $website) {
+        $this->client = DB::table('oauth_clients')->where('id', 2)->first();
+        //return response()->json($this->client->secret, 200);
+
+        if ($request->client_secret !== $this->client->secret) {
+            return response()->json('The id does not match', 400);
+        } else {
+            $settings = $this->getSettings($website);
+            if ($settings['uptime'] == 1) {
+                $uptime = Uptime::create([
+                    'statusCode' => $request->statusCode,
+                    'websiteID' => $website->id,
+                    ]);
+                return response($uptime, 201);
+            } else {
+                return response()->json('The setting is not activated', 400);
+            }
+        }
+    }
+
+    public function geturls (Request $request, Website $website) {
+        $this->client = DB::table('oauth_clients')->where('id', 2)->first();
+        //return response()->json($this->client->secret, 200);
+
+        if ($request->client_secret !== $this->client->secret) {
+            return response()->json('The id does not match', 400);
+        } else {
+            return Website::get();
+        }
+    }
+
+    public function getSettings(Website $website) {
+        $websitefrom = Website::where('id', $website->id)->pluck('featureSettings')->all();
+        $partial = explode(';', $websitefrom[0]);
+        $settings = array();
+        array_walk($partial, function($val,$key) use(&$settings){
+            list($key, $value) = explode(':', $val);
+            $settings[$key] = $value;
+        });
+        return $settings;
     }
 }

@@ -39,22 +39,9 @@ class LoadtimesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Website $website, Url $url)
+    public function store(Request $request)
     {
-        if ($website->user_id !== auth()->user()->id || $website->id !== $url->websiteID) {
-            return response()->json('Unauthorized', 401);
-        }
 
-        $data = $request->validate([
-            'loadtime' => 'required|integer',
-        ]);
-
-        $loadtime = Loadtime::create([
-            'loadtime' => $request->loadtime,
-            'urlID' => $url->id,
-        ]);
-
-        return response($loadtime, 201);
     }
 
     /**

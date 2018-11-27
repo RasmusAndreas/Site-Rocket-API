@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
-    }); 
+    });
 
     // Website Routes CRUD
     Route::get('/websites', 'WebsitesController@index');
@@ -24,19 +24,16 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('/websites/{website}', 'WebsitesController@update');
     Route::delete('/websites/{website}', 'WebsitesController@destroy');
 
-    // Uptime Routes CRU
+    // Uptime Routes RU
     Route::get('/websites/{website}/uptimes', 'UptimesController@index');
-    Route::post('/websites/{website}/uptimes', 'UptimesController@store');
     Route::patch('/websites/{website}/uptimes/{uptime}', 'UptimesController@update');
 
-    // Url Routes CRU
+    // Url Routes RU
     Route::get('/websites/{website}/urls', 'UrlsController@index');
-    Route::post('/websites/{website}/urls', 'UrlsController@store');
     Route::patch('/websites/{website}/urls/{url}', 'UrlsController@update');
 
-    // Loadspeed Routes CR
+    // Loadspeed Routes R
     Route::get('/websites/{website}/urls/{url}/loadtimes', 'LoadtimesController@index');
-    Route::post('/websites/{website}/urls/{url}/loadtimes', 'LoadtimesController@store');
 
     // Authentification
     Route::post('/logout', 'AuthController@logout');
@@ -45,6 +42,8 @@ Route::middleware('auth:api')->group(function () {
 // Authentification
 Route::post('/register', 'AuthController@register');
 
+// Tracking Routes
 Route::post('/scripts/load/{website}/{apikey}/{time}', 'TrackingController@load');
 Route::post('/scripts/seo/{website}/{apikey}', 'TrackingController@seo');
 Route::post('/scripts/uptime/{website}', 'TrackingController@uptime');
+Route::post('/scripts/geturls', 'TrackingController@geturls');

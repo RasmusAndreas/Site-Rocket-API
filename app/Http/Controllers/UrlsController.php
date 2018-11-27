@@ -38,42 +38,9 @@ class UrlsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Website $website)
+    public function store(Request $request)
     {   
-        if ($website->user_id !== auth()->user()->id) {
-            return response()->json('Unauthorized', 401);
-        }
-
-        $data = $request->validate([
-            'url' => 'required|string',
-            'wordCount' => 'required|integer',
-            'metaDescription' => 'required|integer',
-            'altText' => 'required|integer',
-            'title' => 'required|integer',
-            'h1' => 'required|integer',
-            'h2' => 'required|integer',
-            'h3' => 'required|integer',
-            'h4' => 'required|integer',
-            'h5' => 'required|integer',
-            'h6' => 'required|integer',
-        ]);
-
-        $url = Url::create([
-            'url' => $request->url,
-            'wordCount' => $request->wordCount,
-            'metaDescription' => $request->metaDescription,
-            'altText' => $request->altText,
-            'title' => $request->title,
-            'h1' => $request->h1,
-            'h2' => $request->h2,
-            'h3' => $request->h3,
-            'h4' => $request->h4,
-            'h5' => $request->h5,
-            'h6' => $request->h6,
-            'websiteID' => $website->id,
-        ]);
-
-        return response($url, 201);
+        
     }
 
     /**
@@ -112,17 +79,7 @@ class UrlsController extends Controller
         }
 
         $data = $request->validate([
-            'wordCount' => 'required|integer',
-            'metaDescription' => 'required|integer',
-            'altText' => 'required|integer',
-            'title' => 'required|integer',
-            'h1' => 'required|integer',
-            'h2' => 'required|integer',
-            'h3' => 'required|integer',
-            'h4' => 'required|integer',
-            'h5' => 'required|integer',
-            'h6' => 'required|integer',
-
+            'excludeLoadtimes' => 'required|boolean',
         ]);
 
         $url->update($data);
