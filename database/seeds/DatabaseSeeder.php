@@ -19,19 +19,19 @@ class DatabaseSeeder extends Seeder
         // create users
         DB::table('users')->insert([
             'name' => str_random(10),
-            'email' => str_random(10) . '@siterocket.com',
+            'email' => 'rasmus.andreas96@gmail.com',
             'password' => bcrypt('secret'),
             'apikey' => str_random(35) . time(),
         ]);
         DB::table('users')->insert([
             'name' => str_random(10),
-            'email' => str_random(10) . '@siterocket.com',
+            'email' => 'post@jdanet.dk',
             'password' => bcrypt('secret'),
             'apikey' => str_random(35) . time(),
         ]);
         DB::table('users')->insert([
             'name' => str_random(10),
-            'email' => str_random(10) . '@siterocket.com',
+            'email' => 'r@rasmusandreas.dk',
             'password' => bcrypt('secret'),
             'apikey' => str_random(35) . time(),
         ]);

@@ -7,11 +7,14 @@ use App\Url;
 use App\Website;
 use App\User;
 use App\Uptime;
+use Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class TrackingController extends Controller
 {
+
+    // check if loadtimes older than 30 days exists and delete them
     public function load (Request $request, Website $website, User $user, Url $url, $apikey, $time) {
         // get url from db using the url from the site
         $urlfrom = Url::where('url', $request->url)->get();
@@ -38,6 +41,8 @@ class TrackingController extends Controller
                 } else {
                     $settings = $this->getSettings($website);
                     if ($settings['loadtime'] == 1) {
+                        // delete old records
+                        // $oldloads = Loadtime::where('created_at',);
                         // save loadtime
                         $loadtime = Loadtime::create([
                             'loadtime' => $time,
@@ -80,6 +85,8 @@ class TrackingController extends Controller
                 // Something was wrong
                 return response()->json('Something was wrong', 200);
             } else if ($exists === false) {
+                // check for basic errors and send notification
+                checkSEOcreate($request, $userfrom[0]['email'], $websitefrom[0]);
                 // If url does not exists create url and seo data
                 $url = Url::create([
                     'url' => $request->url,
@@ -111,8 +118,9 @@ class TrackingController extends Controller
                     'h6' => 'required|integer',
         
                 ]);
+                checkSEOupdate($request, $userfrom[0]['email'], $urlfrom[0]['id'], $websitefrom[0]);
                 $urlfrom[0]->update($data);
-        
+                // check for basic errors and send notification
                 return response($urlfrom[0], 201);
             }
         }     
@@ -131,6 +139,7 @@ class TrackingController extends Controller
                     'statusCode' => $request->statusCode,
                     'websiteID' => $website->id,
                     ]);
+                // send notification to the user
                 return response($uptime, 201);
             } else {
                 return response()->json('The setting is not activated', 400);
@@ -158,5 +167,52 @@ class TrackingController extends Controller
             $settings[$key] = $value;
         });
         return $settings;
+    }
+
+    public function checkSEOupdate($request, $mail, $urlid, $website) {
+        $urlfrom = Url::where('url', $urlid)->get();
+        if ($request->h1 !== 1 ||
+            $request->title < 50 || 
+            $request->title > 70 ||
+            $request->altText > 0 ||
+            $request->metaDescription < 120 ||
+            $request->metaDescription > 180 ||
+            $request->wordCount < 300) {
+                
+            $timefromlastupdate = $urlfrom[0]['updated_at'];
+            $timenow = new DateTime();
+            $interval = $timefromlastupdate->diff($timenow);
+            if ($interval->format('%Y-%m-%d %H:%i:%s') >= "00-0-1 00:00:00") {
+                $to      = $mail;
+                $subject = 'Notification from SiteRocket';
+                $message = "Hello\n\nYou have an issue on your site: " . $website['websiteName'] . " " . $website['domain'] . "\n\nBest regards\nThe SiteRocket team";
+                $headers = 'From: r@rasmusandreas.dk' . "\r\n" .
+                    'Reply-To: noreply@rasmusandreas.dk' . "\r\n" .
+                    'X-Mailer: PHP/' . phpversion();
+
+                mail($to, $subject, $message, $headers);
+            }
+            
+        }
+    }
+
+    public function checkSEOcreate($request, $mail, $website) {
+        if ($request->h1 !== 1 ||
+            $request->title < 50 || 
+            $request->title > 70 ||
+            $request->altText > 0 ||
+            $request->metaDescription < 120 ||
+            $request->metaDescription > 180 ||
+            $request->wordCount < 300) {
+
+            $to      = $mail;
+            $subject = 'Notification from SiteRocket';
+            $message = "Hello\n\nYou have an issue on your site: " . $website['websiteName'] . " " . $website['domain'] . "\n\nBest regards\nThe SiteRocket team";
+            $headers = 'From: r@rasmusandreas.dk' . "\r\n" .
+                'Reply-To: noreply@rasmusandreas.dk' . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+
+            mail($to, $subject, $message, $headers);     
+        }
     }
 }
