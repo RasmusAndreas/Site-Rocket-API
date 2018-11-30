@@ -43,7 +43,9 @@ Route::middleware('auth:api')->group(function () {
 Route::post('/register', 'AuthController@register');
 
 // Tracking Routes
-Route::post('/scripts/load/{website}/{apikey}/{time}', 'TrackingController@load');
-Route::post('/scripts/seo/{website}/{apikey}', 'TrackingController@seo');
+// Combine load and seo endpoints
+//Route::post('/scripts/load/{website}/{apikey}/{time}', 'TrackingController@load');
+Route::post('/scripts/seo/{website}/{apikey}/{time}', 'TrackingController@seo');
 Route::post('/scripts/uptime/{website}', 'TrackingController@uptime');
 Route::post('/scripts/geturls', 'TrackingController@geturls');
+Route::post('/scripts/deleteOldLoadtimes', 'TrackingController@deleteLoadtimes');

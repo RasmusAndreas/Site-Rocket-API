@@ -15,7 +15,7 @@ class TrackingController extends Controller
 {
 
     // check if loadtimes older than 30 days exists and delete them
-    public function load (Request $request, Website $website, User $user, Url $url, $apikey, $time) {
+    public function createLoadtime (Request $request, Website $website, User $user, Url $url, $apikey, $time) {
         // get url from db using the url from the site
         $urlfrom = Url::where('url', $request->url)->get();
 
@@ -57,7 +57,7 @@ class TrackingController extends Controller
         }
     }
 
-    public function seo (Request $request, Website $website, User $user, Url $url, $apikey) {
+    public function seo (Request $request, Website $website, User $user, Url $url, $apikey, $time) {
         // get url from db using the url from the site
         $urlfrom = Url::where('url', $request->url)->get();
         if (count($urlfrom) === 0) {
@@ -86,7 +86,7 @@ class TrackingController extends Controller
                 return response()->json('Something was wrong', 200);
             } else if ($exists === false) {
                 // check for basic errors and send notification
-                checkSEOcreate($request, $userfrom[0]['email'], $websitefrom[0]);
+                $this->checkSEOcreate($request, $userfrom[0]['email'], $websitefrom[0]);
                 // If url does not exists create url and seo data
                 $url = Url::create([
                     'url' => $request->url,
@@ -102,6 +102,7 @@ class TrackingController extends Controller
                     'h6' => $request->h6,
                     'websiteID' => $website->id,
                 ]);
+                //$this->createLoadtime($request, $website, $user, $url, $apikey, $time);
                 return response($url, 201);
             } else {
                 // If url exists update url and seo data
@@ -118,8 +119,9 @@ class TrackingController extends Controller
                     'h6' => 'required|integer',
         
                 ]);
-                checkSEOupdate($request, $userfrom[0]['email'], $urlfrom[0]['id'], $websitefrom[0]);
+                $this->checkSEOupdate($request, $userfrom[0]['email'], $urlfrom[0]['id'], $websitefrom[0]);
                 $urlfrom[0]->update($data);
+                //$this->createLoadtime($request, $website, $user, $url, $apikey, $time);
                 // check for basic errors and send notification
                 return response($urlfrom[0], 201);
             }
@@ -170,7 +172,7 @@ class TrackingController extends Controller
     }
 
     public function checkSEOupdate($request, $mail, $urlid, $website) {
-        $urlfrom = Url::where('url', $urlid)->get();
+        $urlfrom = Url::where('id', $urlid)->get();
         if ($request->h1 !== 1 ||
             $request->title < 50 || 
             $request->title > 70 ||
@@ -180,7 +182,7 @@ class TrackingController extends Controller
             $request->wordCount < 300) {
                 
             $timefromlastupdate = $urlfrom[0]['updated_at'];
-            $timenow = new DateTime();
+            $timenow = new \DateTime();
             $interval = $timefromlastupdate->diff($timenow);
             if ($interval->format('%Y-%m-%d %H:%i:%s') >= "00-0-1 00:00:00") {
                 $to      = $mail;
@@ -213,6 +215,21 @@ class TrackingController extends Controller
                 'X-Mailer: PHP/' . phpversion();
 
             mail($to, $subject, $message, $headers);     
+        }
+    }
+
+    public function deleteLoadtimes() {
+        if ($request->client_secret !== $this->client->secret) {
+            return response()->json('The id does not match', 400);
+        } else {
+            $loadtimes = Loadtime::get();
+            foreach ($loadtimes as $loadt) {
+                $timenow = new \DateTime();
+                $interval = $loadt["created_at"]->diff($timenow);
+                if ($interval->format('%Y-%m-%d %H:%i:%s') >= "00-1-0 00:00:01") {
+                    $loadt->delete();
+                }
+            }
         }
     }
 }
