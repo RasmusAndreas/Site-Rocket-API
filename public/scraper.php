@@ -22,7 +22,7 @@ imagedestroy($im);
 $seo_data = [];
 $curl = curl_init();
 
-$url = $_GET['url'];
+$url = $_SERVER['REMOTE_ADDR'];
 
 curl_setopt($curl, CURLOPT_URL, $url);
 curl_setopt($curl, CURLOPT_HTTPHEADER, ['Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8']);
@@ -131,5 +131,5 @@ function postData($data, $url, $website, $apikey, $loadtime) {
     return $curlresponse;
 }
 
-$end = postData($seo_data, $_GET['url'], 3, '241XeOQLeSnxGUKx3AbOr4iedpQvd0dsith1543237346', $_GET['loadtime']);
+$end = postData($seo_data, $_SERVER['REMOTE_ADDR'], $_GET['website'], $_GET['apikey'], $_GET['loadtime']);
 var_dump($end);
