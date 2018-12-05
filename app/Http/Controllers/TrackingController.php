@@ -130,19 +130,96 @@ class TrackingController extends Controller
 
     public function uptime (Request $request, Website $website) {
         $this->client = DB::table('oauth_clients')->where('id', 2)->first();
-        //return response()->json($this->client->secret, 200);
-
         if ($request->client_secret !== $this->client->secret) {
             return response()->json('The id does not match', 400);
         } else {
             $settings = $this->getSettings($website);
             if ($settings['uptime'] == 1) {
-                $uptime = Uptime::create([
-                    'statusCode' => $request->statusCode,
-                    'websiteID' => $website->id,
-                    ]);
                 // send notification to the user
-                return response($uptime, 201);
+                $user = User::where('id', $website->user_id)->first();
+                $latestUptime = Uptime::where('websiteID', $website->id)->latest()->first();
+                $timenow = new \DateTime(null, new \DateTimeZone('Europe/Copenhagen'));
+                $interval = $latestUptime['created_at']->diff($timenow);
+                if ($interval->format('%Y-%m-%d %H:%i:%s') < "00-0-0 01:00:00") {
+                    // Less than an hour ago since last mail was sent, therefor do nothing
+                } else {
+                    // More than an hour ago since the mail was sent, therefor send a mail
+                    $to      = $user['email'];
+                    $subject = 'Uptime notification from SiteRocket';
+                    $message = "<!DOCTYPE html>
+                    <html lang='en' dir='ltr'>
+                    <head>
+                        <meta charset='utf-8'>
+                        <title></title>
+                    </head>
+                    <body bgcolor='#cecece' style='backround-color: #cecece;'>
+                        <center>
+                            <table bgcolor='#cecece' width='100%' height='100%'>
+                                <tr style='height: 60px;'>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <center>
+                                        <table cellspacing='0' width='100%' style='max-width: 540px; font-family: Arial, Helvetica, sans-serif;'>
+                                            <tr bgcolor='#5D7A82' height='120px'>
+                                                <td width='20%'></td>
+                                                <td width='60%'><img src='http://assets.sovid.dk/siterocket_logo.png'></td>
+                                                <td width='20%'></td>
+                                            </tr>
+                                            <tr bgcolor='#ffffff' style='backround-color: #ffffff; height: 60px;'>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr bgcolor='#ffffff' style='backround-color: #ffffff;'>
+                                                <td></td>
+                                                <td>Hello<br><br>Your site: " 
+                                                . $website['websiteName'] . 
+                                                " is down right now<br><br> Visit SiteRocket to view more details
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            <tr bgcolor='#ffffff' style='backround-color: #ffffff; height: 60px;'>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr bgcolor='#ffffff'>
+                                                <td></td>
+                                                <td>Best regards<br><br>The SiteRocket team</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr bgcolor='#ffffff' style='height: 60px;'>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                    </center>
+                                    </tr>
+                                    <tr style='height: 60px;'>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </center>
+                        </body>
+                    </html>";                
+                    $headers = 'From: Team SiteRocket <r@rasmusandreas.dk>' . "\r\n" .
+                        'Reply-To: noreply@rasmusandreas.dk' . "\r\n" .
+                        'X-Mailer: PHP/' . phpversion() . "\r\n" .
+                        "MIME-Version: 1.0" . "\r\n" .
+                        "Content-Type: text/html; charset=ISO-8859-1" . "\r\n";
+
+                    mail($to, $subject, $message, $headers);
+                }
+                $uptime = Uptime::create([
+                   'statusCode' => $request->statusCode,
+                   'websiteID' => $website->id,
+                ]);
             } else {
                 return response()->json('The setting is not activated', 400);
             }
@@ -152,11 +229,19 @@ class TrackingController extends Controller
     public function geturls (Request $request, Website $website) {
         $this->client = DB::table('oauth_clients')->where('id', 2)->first();
         //return response()->json($this->client->secret, 200);
-
+        $websitesToPing = array();
         if ($request->client_secret !== $this->client->secret) {
             return response()->json('The id does not match', 400);
         } else {
-            return Website::get();
+            // check if setting activated
+            $websitesgot = Website::get();
+            foreach ($websitesgot as $websitegot) {
+                $settings = $this->getSettings($websitegot);
+                if ($settings["uptime"] == 1) {
+                    array_push($websitesToPing, $websitegot);
+                }
+            }
+            return $websitesToPing;
         }
     }
 
@@ -186,7 +271,7 @@ class TrackingController extends Controller
             $interval = $timefromlastupdate->diff($timenow);
             if ($interval->format('%Y-%m-%d %H:%i:%s') >= "00-0-1 00:00:00") {
                 $to      = $mail;
-                $subject = 'Notification from SiteRocket';
+                $subject = 'Loadtime notification from SiteRocket';
                 $message = "<!DOCTYPE html>
                 <html lang='en' dir='ltr'>
                   <head>
@@ -273,7 +358,7 @@ class TrackingController extends Controller
             $request->wordCount < 300) {
 
             $to      = $mail;
-            $subject = 'Notification from SiteRocket';
+            $subject = 'Loadtime notification from SiteRocket';
             $message = "<!DOCTYPE html>
                 <html lang='en' dir='ltr'>
                   <head>

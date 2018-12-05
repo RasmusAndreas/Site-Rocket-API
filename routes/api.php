@@ -37,14 +37,22 @@ Route::middleware('auth:api')->group(function () {
 
     // Authentification
     Route::post('/logout', 'AuthController@logout');
+
+    // User Routes U
+    Route::patch('/user/update', 'AuthController@updateUser');
+
+    // Send mail with report link
+    Route::post('/websites/{website}/sendmail', 'WebsitesController@sendMail');
 });
 
 // Authentification
 Route::post('/register', 'AuthController@register');
 
+// Reset password
+Route::post('/forgot', 'AuthController@forgotPassword');
+Route::patch('/reset', 'AuthController@resetPassword');
+
 // Tracking Routes
-// Combine load and seo endpoints
-//Route::post('/scripts/load/{website}/{apikey}/{time}', 'TrackingController@load');
 Route::post('/scripts/seo/{website}/{apikey}/{time}', 'TrackingController@seo');
 Route::post('/scripts/uptime/{website}', 'TrackingController@uptime');
 Route::post('/scripts/geturls', 'TrackingController@geturls');
