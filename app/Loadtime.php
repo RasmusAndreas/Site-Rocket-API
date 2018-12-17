@@ -8,7 +8,7 @@ class Loadtime extends Model
 {
     protected $fillable = ['loadtime', 'urlID'];
 
-    public function website() {
-        return $this->belongsTo('App\Url');
+    public function urls() {
+        return $this->belongsTo('App\Url', 'urlID');
     }
 }

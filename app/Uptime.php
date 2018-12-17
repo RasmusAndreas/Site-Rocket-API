@@ -8,7 +8,7 @@ class Uptime extends Model
 {
     protected $fillable = ['excludeDowntime', 'statusCode', 'websiteID'];
 
-    public function website() {
-        return $this->belongsTo('App\Website');
+    public function websites() {
+        return $this->belongsTo('App\Website', 'websiteID');
     }
 }

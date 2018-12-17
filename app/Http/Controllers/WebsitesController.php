@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Website;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class WebsitesController extends Controller
@@ -90,9 +91,7 @@ class WebsitesController extends Controller
 
         $data = $request->validate([
             'websiteName' => 'required|string',
-            'domain' => 'required|string',
             'featureSettings' => 'required|string',
-            'reportLink' => 'required|string',
         ]);
 
         $website->update($data);
@@ -157,9 +156,9 @@ class WebsitesController extends Controller
                                         <tr bgcolor='#ffffff' style='backround-color: #ffffff;'>
                                             <td></td>
                                             <td>Hello<br><br>You have received a link to the report regarding your site: " 
-                                            . $websiteToSend[0]->websiteName . 
+                                            . $websiteToSend[0]->domain . 
                                             "<br> The link to your report is: " 
-                                            . $websiteToSend[0]->reportLink . 
+                                            . $request->reportLink . 
                                             "</td>
                                             <td></td>
                                         </tr>
@@ -199,5 +198,20 @@ class WebsitesController extends Controller
         mail($to, $subject, $message, $headers);
 
         return response()->json("Link was sent to $request->mail", 200);
+    }
+
+    public function getAll() {
+        $allWebsites = Website::with('uptimes', 'urls', 'urls.loadtimes')->where('websites.user_id', auth()->user()->id)->get();
+        return $allWebsites;
+    }
+
+    public function getAllToWebsite(Request $request) {
+        $allWebsites = Website::with('uptimes', 'urls', 'urls.loadtimes')->where('websites.user_id', auth()->user()->id)->where('id', $request->websiteid)->get();
+        return $allWebsites;
+    }
+
+    public function getWebsiteReport(Request $request) {
+        $allWebsites = Website::with('uptimes', 'urls', 'urls.loadtimes')->where('reportLink', $request->reportLink)->get();
+        return $allWebsites;
     }
 }

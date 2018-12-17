@@ -23,10 +23,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout() {
-        auth()->user()->tokens->each(function($token, $key) {
-            $token->delete();
-        });
+    public function logout(Request $request) {
+        // auth()->user()->tokens->each(function($token, $key) {
+        //     $token->delete();
+        // });
+        $request->user()->token()->delete();
 
         return response()->json('Logged out succesfully', 200);
     }
@@ -71,7 +72,7 @@ class AuthController extends Controller
                                         <td>Hello<br><br>You have requested to have your password reset on your SiteRocket account linked to " . $request->email . ".<br><br>
                                           The link to reset the password for your account is:<br>"
                                         . $request->frontendUrl  .
-                                        "/reset?email=" . $request->email . "&reset=" . $user[0]['reset_password_token'] . "<br><br>If this wasn't requested by you, please ignore this mail.</td>
+                                        "/" . "reset/" . $request->email . "/" . $user[0]['reset_password_token'] . "<br><br>If this wasn't requested by you, please ignore this mail.</td>
                                         <td></td>
                                     </tr>
                                     <tr bgcolor='#ffffff' style='backround-color: #ffffff; height: 60px;'>
@@ -129,20 +130,29 @@ class AuthController extends Controller
     }
 
     public function updateUser(Request $request) {
-        if ($request->password === $request->passwordRepeat) {
-            $user = User::where('id', auth()->user()->id)->get();
-            if (Hash::check($request->oldPassword, $user[0]["password"])) {
-                $user[0]->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                ]);
-                return response($user[0], 200);
+        if ($request->oldPassword != '' && $request->password != '') {
+            if ($request->password === $request->passwordRepeat) {
+                $user = User::where('id', auth()->user()->id)->get();
+                if (Hash::check($request->oldPassword, $user[0]["password"])) {
+                    $user[0]->update([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                    ]);
+                    return response($user[0], 200);
+                } else {
+                    return response()->json('The old password is not the correct one', 400);
+                }
             } else {
-                return response()->json('The old password is not the correct one', 400);
+                return response()->json('Passwords need to be the same', 400);
             }
         } else {
-            return response()->json('Passwords need to be the same', 400);
+            $user = User::where('id', auth()->user()->id)->get();
+            $user[0]->update([
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
+            return response($user[0], 200);
         }
     }
 }

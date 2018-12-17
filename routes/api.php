@@ -43,7 +43,14 @@ Route::middleware('auth:api')->group(function () {
 
     // Send mail with report link
     Route::post('/websites/{website}/sendmail', 'WebsitesController@sendMail');
+
+    // GET EVERYTHING
+    Route::get('/everything', 'WebsitesController@getAll');
+    Route::post('/getAllWebsite', 'WebsitesController@getAllToWebsite');
 });
+
+// get website for report
+Route::post('/report', 'WebsitesController@getWebsiteReport');
 
 // Authentification
 Route::post('/register', 'AuthController@register');

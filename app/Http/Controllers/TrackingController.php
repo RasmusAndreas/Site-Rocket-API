@@ -86,7 +86,7 @@ class TrackingController extends Controller
                 return response()->json('Something was wrong', 200);
             } else if ($exists === false) {
                 // check for basic errors and send notification
-                $this->checkSEOcreate($request, $userfrom[0]['email'], $websitefrom[0]);
+                // $this->checkSEOcreate($request, $userfrom[0]['email'], $websitefrom[0]);
                 // If url does not exists create url and seo data
                 $url = Url::create([
                     'url' => $request->url,
@@ -119,7 +119,7 @@ class TrackingController extends Controller
                     'h6' => 'required|integer',
         
                 ]);
-                $this->checkSEOupdate($request, $userfrom[0]['email'], $urlfrom[0]['id'], $websitefrom[0]);
+                // $this->checkSEOupdate($request, $userfrom[0]['email'], $urlfrom[0]['id'], $websitefrom[0]);
                 $urlfrom[0]->update($data);
                 $this->createLoadtime($request, $website, $user, $url, $apikey, $time);
                 // check for basic errors and send notification
@@ -271,7 +271,7 @@ class TrackingController extends Controller
             $interval = $timefromlastupdate->diff($timenow);
             if ($interval->format('%Y-%m-%d %H:%i:%s') >= "00-0-1 00:00:00") {
                 $to      = $mail;
-                $subject = 'Loadtime notification from SiteRocket';
+                $subject = 'SEO notification from SiteRocket';
                 $message = "<!DOCTYPE html>
                 <html lang='en' dir='ltr'>
                   <head>
@@ -358,7 +358,7 @@ class TrackingController extends Controller
             $request->wordCount < 300) {
 
             $to      = $mail;
-            $subject = 'Loadtime notification from SiteRocket';
+            $subject = 'SEO notification from SiteRocket';
             $message = "<!DOCTYPE html>
                 <html lang='en' dir='ltr'>
                   <head>

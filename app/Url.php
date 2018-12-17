@@ -8,8 +8,10 @@ class Url extends Model
 {
     protected $fillable = ['url', 'excludeLoadtimes', 'wordCount', 'metaDescription', 'altText', 'title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'websiteID'];
 
-    public function website() {
-        return $this->belongsTo('App\Website');
-        return $this->hasMany('App\Loadtime');
+    public function websites() {
+        return $this->belongsTo('App\Website', 'websiteID');
+    }
+    public function loadtimes() {
+        return $this->hasMany('App\Loadtime', 'urlID');
     }
 }
