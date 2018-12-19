@@ -139,7 +139,11 @@ class TrackingController extends Controller
                 $user = User::where('id', $website->user_id)->first();
                 $latestUptime = Uptime::where('websiteID', $website->id)->latest()->first();
                 $timenow = new \DateTime(null, new \DateTimeZone('Europe/Copenhagen'));
-                $interval = $latestUptime['created_at']->diff($timenow);
+                if ($latestUptime[0] != NULL) {
+                    $interval = $latestUptime['created_at']->diff($timenow);
+                } else {
+                    $interval = new \DateTime("00-0-0 02:00:00");
+                }
                 if ($interval->format('%Y-%m-%d %H:%i:%s') < "00-0-0 01:00:00") {
                     // Less than an hour ago since last mail was sent, therefor do nothing
                 } else {
