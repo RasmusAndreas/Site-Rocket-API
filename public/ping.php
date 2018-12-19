@@ -1,6 +1,7 @@
 <?php
 
 $urls = getUrls();
+var_dump($urls);
 foreach ($urls as $url) {
   $result = ping($url["domain"]);
   if ($result !== 200 && $result !== 0){
@@ -42,7 +43,7 @@ function getUrls() {
 }
 
 function insertUptime($websiteID, $statusCode) {
-  $target_url = "http://sovid.dk/api/scripts/uptime/$websiteID";
+  $target_url = "http://sovid.dk/api/scripts/uptime/" . $websiteID;
   $post = array('client_secret'=>'tMGzy0M2XBkPsrQQDGZSpJWuzqB1IuVVO9I6fOlV', 'statusCode' => $statusCode);
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL,$target_url);
