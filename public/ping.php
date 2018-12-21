@@ -4,7 +4,7 @@ $urls = getUrls();
 var_dump($urls);
 foreach ($urls as $url) {
   $result = ping($url["domain"]);
-  if ($result !== 200 && $result !== 0){
+  if ($result !== 200 && $result !== 0 && $result !== 403){
     insertUptime($url["id"], $result);
   }
 }
