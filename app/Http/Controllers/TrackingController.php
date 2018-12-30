@@ -137,16 +137,17 @@ class TrackingController extends Controller
             if ($settings['uptime'] == 1) {
                 // send notification to the user
                 $user = User::where('id', $website->user_id)->first();
-                $latestUptime = Uptime::where('websiteID', $website->id)->latest()->first();
+                $latestUptime = Uptime::where('websiteID', $website->id)->latest()->get();
+                //return $latestUptime;
                 $timenow = new \DateTime(null, new \DateTimeZone('Europe/Copenhagen'));
-                if ($latestUptime[0] != NULL) {
-                    $interval = $latestUptime['created_at']->diff($timenow);
+                if (isset($latestUptime[0]->created_at)) {
+                    $interval = $latestUptime[0]->created_at->diffInMinutes($timenow);
                 } else {
-                    $interval = new \DateTime("00-0-0 02:00:00");
+                    $interval = 61;
                 }
-                if ($interval->format('%Y-%m-%d %H:%i:%s') < "00-0-0 01:00:00") {
+                if ($interval < 60) {
                     // Less than an hour ago since last mail was sent, therefor do nothing
-                } else {
+                } else if ($interval >= 60) {
                     // More than an hour ago since the mail was sent, therefor send a mail
                     $to      = $user['email'];
                     $subject = 'Uptime notification from SiteRocket';
